@@ -1,0 +1,63 @@
+// Use the database
+use SchoolDB; // Switch to (or create) a database named "SchoolDB"
+
+// 1. Insert Operations
+db.students.insertMany([
+    { roll: 1, name: "Alice", subject: "Math", marks: 85 },
+    { roll: 2, name: "Bob", subject: "Math", marks: 78 },
+    { roll: 3, name: "Charlie", subject: "Science", marks: 92 },
+    { roll: 4, name: "Diana", subject: "Science", marks: 89 },
+    { roll: 5, name: "Eve", subject: "Math", marks: 65 },
+    { roll: 6, name: "Frank", subject: "Math", marks: 95 },
+    { roll: 7, name: "Grace", subject: "Science", marks: 73 },
+    { roll: 8, name: "Hannah", subject: "Science", marks: 88 }
+]);
+
+// 2. Aggregation Operations
+db.students.aggregate([
+    { $group: { _id: "$subject", avgMarks: { $avg: "$marks" } } }
+]);
+
+db.students.aggregate([
+    { $group: { _id: "$subject", maxMarks: { $max: "$marks" }, minMarks: { $min: "$marks" } } }
+]);
+
+db.students.aggregate([
+    { $group: { _id: "$name", totalMarks: { $sum: "$marks" } } }
+]);
+
+db.students.aggregate([
+    { $group: { _id: "$subject", count: { $sum: 1 } } }
+]);
+
+db.students.aggregate([
+    { $group: {
+        _id: null,
+        avgMarks: { $avg: "$marks" },
+        totalMarks: { $sum: "$marks" },
+        maxMarks: { $max: "$marks" },
+        minMarks: { $min: "$marks" }
+    }}
+]);
+
+// 3. Indexing
+
+db.students.createIndex({ roll: 1 });
+
+db.students.createIndex({ subject: 1 });
+
+db.students.createIndex({ subject: 1, marks: -1 });
+
+db.students.find().sort({ marks: -1 });
+
+db.students.find().sort({ subject: 1, marks: -1 });
+
+db.students.getIndexes();
+
+db.students.createIndex({ roll: 1 });
+
+db.students.createIndex({ roll: 1 });
+
+db.students.createIndex({ subject: 1, marks: -1 });
+
+db.students.find({ subject: "Math", marks: { $gt: 80 } });
